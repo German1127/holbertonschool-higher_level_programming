@@ -2,4 +2,4 @@
 def print_reversed_list_integer(my_list=[]):
     ordenado = sorted(my_list, reverse=True)
     for ordenado in my_list:
-        print("{}".format(ordenado))
+        print("{:d}".format(ordenado))
