@@ -8,7 +8,7 @@ class Square:
     def __init__(self, size=0):
         """__init__ is constructor"""
         self.__size = size
-        
+
         """chek is size int"""
     def size(self, new_size):
         if type(new_size) is not int:
