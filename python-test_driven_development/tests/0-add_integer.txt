@@ -1,45 +1,57 @@
->>> add = __import__("0-add_integer").add_integer
->>> add(1, 2)
-3
->>> add(100, -2)
+>>> add_integer = __import__('0-add_integer').add_integer
+>>> add_integer(2, 2)
+4
+>>> add_integer(2, 5.0)
+7
+>>> add_integer(90, -2)
+88
+>>> add_integer(10.3, -5)
+5
+>>> add_integer(100.3, -2.9)
 98
->>> add(2)
-100
->>> add(100.3, -2)
-98
->>> add(100.3, -2.1)
-98
->>> add(100, -2.1)
-98
->>> try:
-...     add(4, "School")
-... except Exception as e:
-...     print(e)
+>>> add_integer(1)
+99
+
+"""
+Error
+"""
+>>> add_integer("a", "b")
+Traceback (most recent call last):
 ...
-b must be an integer
->>> try:
-...     add(None)
-... except Exception as e:
-...     print(e)
+TypeError: a must be an integer
+>>> add_integer(1, '999')
+Traceback (most recent call last):
 ...
-a must be an integer
->>> add(1, 2.9)
-3
->>> try:
-...     add(1, [5, 6])
-... except Exception as e:
-...     print(e)
+TypeError: b must be an integer
+>>> add_integer(1, [20.8])
+Traceback (most recent call last):
 ...
-b must be an integer
->>> try:
-...     add(1, float('inf'))
-... except Exception as e:
-...     print(e)
+TypeError: b must be an integer
+>>> add_integer(None, 50)
+Traceback (most recent call last):
 ...
-cannot convert float infinity to integer
->>> try:
-...     add(1, float('NaN'))
-... except Exception as e:
-...     print(e)
+TypeError: a must be an integer
+>>> add_integer(2, None)
+Traceback (most recent call last):
 ...
-cannot convert float NaN to integer
+TypeError: b must be an integer
+>>> add_integer(777, float('NaN'))
+Traceback (most recent call last):
+...
+ValueError: cannot convert float NaN to integer
+>>> add_integer(666, float('inf'))
+Traceback (most recent call last):
+...
+OverflowError: cannot convert float infinity to integer
+>>> add_integer(2000202, -float('inf'))
+Traceback (most recent call last):
+...
+OverflowError: cannot convert float infinity to integer
+>>> add_integer()
+Traceback (most recent call last):
+...
+TypeError: add_integer() missing 1 required positional argument: 'a'
+>>> add_integer(None)
+Traceback (most recent call last):
+...
+TypeError: a must be an integer
