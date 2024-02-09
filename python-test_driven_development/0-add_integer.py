@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
-"""Module for 0-add_integer
-"""
+"""0-add_integer."""
 
 
 def add_integer(a, b=98):
