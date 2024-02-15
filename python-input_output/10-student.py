@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 
+
 """class Student."""
 
 
@@ -12,12 +13,11 @@ class Student:
         self.age = age
 
     def to_json(self, attrs=None):
-
-        if not isinstance(attrs, list=[]):
+        if attrs is None:
             return self.__dict__
         else:
             dic = {}
             for x in attrs:
-                if x in self.__dict__:
-                    dic[x] = self.__dict__[x]
-        return dic
+                if x in self.__dict__.keys():
+                    x[att] = self.__dict__[x]
+            return dic
