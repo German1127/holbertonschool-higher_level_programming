@@ -19,5 +19,5 @@ class Student:
             dic = {}
             for x in attrs:
                 if x in self.__dict__.keys():
-                    x[att] = self.__dict__[x]
+                    dic[x] = self.__dict__[x]
             return dic
