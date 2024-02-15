@@ -1,14 +1,18 @@
 #!/usr/bin/python3
 
 
+"""Triangle"""
+
+
 def pascal_triangle(n):
     if n <= 0:
         return []
-    if n == 1:
-        return [[1]]
 
-    triangle = [[1]]
-    for x in range(n-1):
-        triangle.append([a+b for a, b
-                         in zip([0] + triangle[-1], triangle[-1] + [0])])
-    return triangle
+    x = [[1]]
+    while len(x) is not n:
+        tmp = [1]
+        for i in range(len(x[-1]) - 1):
+            tmp.append(x[-1][i] + x[-1][i + 1])
+        tmp.append(1)
+        x.append(tmp)
+    return x
