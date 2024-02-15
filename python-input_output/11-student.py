@@ -12,15 +12,14 @@ class Student:
         self.age = age
 
     def to_json(self, attrs=None):
-
-        if not isinstance(attrs, list=[]):
+        if attrs is None:
             return self.__dict__
         else:
             dic = {}
             for x in attrs:
-                if x in self.__dict__:
+                if x in self.__dict__.keys():
                     dic[x] = self.__dict__[x]
-        return dic
+            return dic
 
     def reload_from_json(self, json):
         for k, v in json.items():
