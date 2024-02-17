@@ -1,18 +1,20 @@
 #!/usr/bin/python3
 
 
+"""class Base """
+
+
 import json
-import os
 import csv
+import os.path
 
 
 class Base:
-    """Class base"""
+    """ Class Base """
     __nb_objects = 0
 
     def __init__(self, id=None):
-        if type(id) != int and id is not None:
-            raise TypeError("id must be an integer")
+        """ Initializes instances """
         if id is not None:
             self.id = id
         else:
@@ -21,125 +23,118 @@ class Base:
 
     @staticmethod
     def to_json_string(list_dictionaries):
-        if list_dictionaries is None or list_dictionaries == []:
+        """ List to JSON string """
+        if list_dictionaries is None or list_dictionaries == "[]":
             return "[]"
-        if (type(list_dictionaries) != list or
-           not all(type(x) == dict for x in list_dictionaries)):
-            raise TypeError("list_dictionaries must be a list of dictionaries")
         return json.dumps(list_dictionaries)
 
     @classmethod
     def save_to_file(cls, list_objs):
-        if list_objs is None or list_objs == []:
-            jstr = "[]"
+        """ Save object in a file """
+        filename = "{}.json".format(cls.__name__)
+        list_dic = []
+
+        if not list_objs:
+            pass
         else:
-            jstr = cls.to_json_string([o.to_dictionary() for o in list_objs])
-        filename = cls.__name__ + ".json"
+            for i in range(len(list_objs)):
+                list_dic.append(list_objs[i].to_dictionary())
+
+        lists = cls.to_json_string(list_dic)
+
         with open(filename, 'w') as f:
-                f.write(jstr)
+            f.write(lists)
 
     @staticmethod
     def from_json_string(json_string):
-        l = []
-        if json_string is not None and json_string != '':
-            if type(json_string) != str:
-                raise TypeError("json_string must be a string")
-            l = json.loads(json_string)
-        return l
+        """ JSON string to dictionary """
+        if not json_string:
+            return []
+        return json.loads(json_string)
 
     @classmethod
     def create(cls, **dictionary):
-        if cls.__name__ == 'Rectangle':
-            dummy = cls(1, 1)
-        elif cls.__name__ == 'Square':
-            dummy = cls(1)
-        dummy.update(**dictionary)
-        return dummy
+        """ Create an instance """
+        if cls.__name__ == "Rectangle":
+            new = cls(10, 10)
+        else:
+            new = cls(10)
+        new.update(**dictionary)
+        return new
 
     @classmethod
     def load_from_file(cls):
-        filename = cls.__name__ + ".json"
-        l = []
-        list_dicts = []
-        if os.path.exists(filename):
-            with open(filename, 'r') as f:
-                s = f.read()
-                list_dicts = cls.from_json_string(s)
-                for d in list_dicts:
-                    l.append(cls.create(**d))
-        return l
+        """ Returns a list of instances """
+        filename = "{}.json".format(cls.__name__)
+
+        if os.path.exists(filename) is False:
+            return []
+
+        with open(filename, 'r') as f:
+            list_str = f.read()
+
+        list_cls = cls.from_json_string(list_str)
+        list_ins = []
+
+        for index in range(len(list_cls)):
+            list_ins.append(cls.create(**list_cls[index]))
+
+        return list_ins
 
     @classmethod
     def save_to_file_csv(cls, list_objs):
-        if (type(list_objs) != list and
-           list_objs is not None or
-           not all(isinstance(x, cls) for x in list_objs)):
-            raise TypeError("list_objs must be a list of instances")
+        """ Method that saves a CSV file """
+        filename = "{}.csv".format(cls.__name__)
 
-        filename = cls.__name__ + ".csv"
-        with open(filename, 'w') as f:
-            if list_objs is not None:
-                list_objs = [x.to_dictionary() for x in list_objs]
-                if cls.__name__ == 'Rectangle':
-                    fields = ['id', 'width', 'height', 'x', 'y']
-                elif cls.__name__ == 'Square':
-                    fields = ['id', 'size', 'x', 'y']
-                writer = csv.DictWriter(f, fieldnames=fields)
-                writer.writeheader()
-                writer.writerows(list_objs)
+        if cls.__name__ == "Rectangle":
+            list_dic = [0, 0, 0, 0, 0]
+            list_keys = ['id', 'width', 'height', 'x', 'y']
+        else:
+            list_dic = ['0', '0', '0', '0']
+            list_keys = ['id', 'size', 'x', 'y']
+
+        matrix = []
+
+        if not list_objs:
+            pass
+        else:
+            for obj in list_objs:
+                for kv in range(len(list_keys)):
+                    list_dic[kv] = obj.to_dictionary()[list_keys[kv]]
+                matrix.append(list_dic[:])
+
+        with open(filename, 'w') as writeFile:
+            writer = csv.writer(writeFile)
+            writer.writerows(matrix)
 
     @classmethod
     def load_from_file_csv(cls):
+        """ Method that loads a CSV file """
+        filename = "{}.csv".format(cls.__name__)
 
-        filename = cls.__name__ + ".csv"
-        l = []
-        if os.path.exists(filename):
-            with open(filename, 'r') as f:
-                reader = csv.reader(f, delimiter=',')
-                if cls.__name__ == 'Rectangle':
-                    fields = ['id', 'width', 'height', 'x', 'y']
-                elif cls.__name__ == 'Square':
-                    fields = ['id', 'size', 'x', 'y']
-                for x, row in enumerate(reader):
-                    if x > 0:
-                        i = cls(1, 1)
-                        for j, e in enumerate(row):
-                            if e:
-                                setattr(i, fields[j], int(e))
-                        l.append(i)
-        return l
+        if os.path.exists(filename) is False:
+            return []
 
-    @staticmethod
-    def draw(list_rectangles, list_squares):
+        with open(filename, 'r') as readFile:
+            reader = csv.reader(readFile)
+            csv_list = list(reader)
 
-        import turtle
-        import time
-        from random import randrange
+        if cls.__name__ == "Rectangle":
+            list_keys = ['id', 'width', 'height', 'x', 'y']
+        else:
+            list_keys = ['id', 'size', 'x', 'y']
 
-        t = turtle.Turtle()
-        t.color("beige")
-        turtle.bgcolor("violet")
-        t.shape("square")
-        t.pensize(8)
+        matrix = []
 
-        for i in (list_rectangles + list_squares):
-            t.penup()
-            t.setpos(0, 0)
-            turtle.Screen().colormode(255)
-            t.pencolor((randrange(255), randrange(255), randrange(255)))
-            Base.draw_rect(t, i)
-            time.sleep(1)
-        time.sleep(5)
+        for csv_elem in csv_list:
+            dict_csv = {}
+            for kv in enumerate(csv_elem):
+                dict_csv[list_keys[kv[0]]] = int(kv[1])
+            matrix.append(dict_csv)
 
-    @staticmethod
-    def draw_rect(t, rect):
-        t.penup()
-        t.setpos(rect.x, rect.y)
-        t.pendown()
-        t.forward(rect.width)
-        t.left(90)
-        t.forward(rect.height)
-        t.left(90)
-        t.forward(rect.width)
-        t.left(90)
-        t.forward(rect.height)
+        list_ins = []
+
+        for index in range(len(matrix)):
+            list_ins.append(cls.create(**matrix[index]))
+
+        return list_ins
