@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 
 """
-Script that lists all states with a name starting with N
-from the database hbtn_0e_0_usa
+takes in an argument and displays all values in the states table
+of hbtn_0e_0_usa where name matches the argument
 """
 
 import sys
@@ -16,8 +16,8 @@ if __name__ == "__main__":
                          passwd=sys.argv[2],
                          db=sys.argv[3])
     cursor = db.cursor()
-    cursor.execute(
-        "SELECT * FROM states WHERE BINARY name LIKE 'N%'ORDER BY id ASC")
+    cursor.execute("SELECT cities.id, cities.name, states.name FROM cities \
+        LEFT JOIN states ON cities.state_id = states.id ORDER BY id ASC")
     row_result = cursor.fetchall()
     for row in row_result:
         print(row)
